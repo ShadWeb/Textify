@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["file:///home/shadmehr/Desktop/Textify/pages/_app.tsx"],"sourcesContent":["import \"@/styles/globals.css\";\nimport type { AppProps } from \"next/app\";\nimport { HeroUIProvider, ToastProvider } from \"@heroui/react\";\nimport { useEffect } from \"react\";\nimport { initializeTheme } from \"@/utils/theme\";\nexport default function App({ Component, pageProps }: AppProps) {\n  // useEffect(() => {\n  //   initializeTheme();\n  // }, []);\n  return (\n    <HeroUIProvider>\n      <ToastProvider placement=\"top-center\" />\n      <Component {...pageProps} />\n    </HeroUIProvider>\n  );\n}\n"],"names":[],"mappings":";;;;;AAEA;;;;;;;;AAGe,SAAS,IAAI,EAAE,SAAS,EAAE,SAAS,EAAY;IAC5D,oBAAoB;IACpB,uBAAuB;IACvB,UAAU;IACV,qBACE,qKAAC,oJAAc;;0BACb,qKAAC,mJAAa;gBAAC,WAAU;;;;;;0BACzB,qKAAC;gBAAW,GAAG,SAAS;;;;;;;;;;;;AAG9B","debugId":null}}]
+}

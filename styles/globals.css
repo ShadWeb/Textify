@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  html {
+    font-family: "Inter", sans-serif;
+  }
+}
+
+@layer utilities {
+  .form-input {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/50;
+  }
+}
