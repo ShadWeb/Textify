@@ -12,6 +12,9 @@ import {
   FileText,
   FileCode,
   Image as ImageIcon,
+  AlertCircle,
+  CheckCircle2,
+  RefreshCw,
 } from "lucide-react";
 
 interface TranslationState {
@@ -19,6 +22,14 @@ interface TranslationState {
   sourceLang: string;
   targetLang: string;
   isTranslating: boolean;
+}
+
+interface Notification {
+  id: string;
+  type: "success" | "error" | "warning" | "info";
+  title: string;
+  message: string;
+  timestamp: Date;
 }
 
 const UploadSection: React.FC = () => {
@@ -40,8 +51,13 @@ const UploadSection: React.FC = () => {
   const [showTranslationPanel, setShowTranslationPanel] =
     useState<boolean>(false);
   const [isDragActive, setIsDragActive] = useState<boolean>(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [retryCount, setRetryCount] = useState<number>(0);
+  const [lastOperation, setLastOperation] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const MAX_RETRIES = 3;
+  const RETRY_DELAY = 2000;
 
   const languages = [
     { code: "en", name: "انگلیسی" },
@@ -56,15 +72,71 @@ const UploadSection: React.FC = () => {
     { code: "fa", name: "فارسی" },
   ];
 
-  const processImageWithOCR = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append("image", file);
-    return await processWithTesseract(formData);
+  // سیستم نوتیفیکیشن
+  const addNotification = useCallback(
+    (type: Notification["type"], title: string, message: string) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      const newNotification: Notification = {
+        id,
+        type,
+        title,
+        message,
+        timestamp: new Date(),
+      };
+
+      setNotifications((prev) => [newNotification, ...prev.slice(0, 4)]); // حداکثر ۵ نوتیفیکیشن
+
+      // حذف خودکار نوتیفیکیشن بعد از ۵ ثانیه
+      setTimeout(() => {
+        setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+      }, 5000);
+    },
+    []
+  );
+
+  const removeNotification = useCallback((id: string) => {
+    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+  }, []);
+
+  // تابع تاخیر
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  // پردازش تصویر با OCR با قابلیت تلاش مجدد
+  const processImageWithOCR = async (
+    file: File,
+    attempt: number = 1
+  ): Promise<string> => {
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      setLastOperation("ocr_processing");
+      addNotification(
+        "info",
+        "در حال پردازش تصویر",
+        `تلاش ${attempt} از ${MAX_RETRIES}`
+      );
+
+      return await processWithTesseract(formData);
+    } catch (error) {
+      if (attempt < MAX_RETRIES) {
+        addNotification(
+          "warning",
+          "خطا در پردازش",
+          `تلاش مجدد در ${RETRY_DELAY / 1000} ثانیه...`
+        );
+        await delay(RETRY_DELAY);
+        return processImageWithOCR(file, attempt + 1);
+      }
+      throw error;
+    }
   };
 
   const processWithTesseract = async (formData: FormData): Promise<string> => {
     try {
       const { createWorker } = await import("tesseract.js");
+
       const worker = await createWorker({
         logger: (m) => {
           if (m.status === "recognizing text") {
@@ -75,23 +147,53 @@ const UploadSection: React.FC = () => {
             }));
           }
         },
+        errorHandler: (err) => {
+          console.error("Tesseract Worker Error:", err);
+          addNotification("error", "خطای Worker", "خطا در اجرای پردازشگر OCR");
+        },
       });
 
       await worker.loadLanguage("fas+eng");
       await worker.initialize("fas+eng");
+
+      // تنظیم timeout برای پردازش
+      const processingTimeout = setTimeout(() => {
+        addNotification(
+          "warning",
+          "پردازش طولانی",
+          "پردازش تصویر بیشتر از حد انتظار طول می‌کشد..."
+        );
+      }, 10000);
+
       const file = formData.get("image") as File;
       const {
         data: { text },
       } = await worker.recognize(file);
+
+      clearTimeout(processingTimeout);
       await worker.terminate();
+
       return text.trim();
     } catch (error) {
       console.error("Tesseract error:", error);
-      throw new Error("خطا در پردازش تصویر با Tesseract");
+
+      if (error instanceof Error) {
+        if (error.message.includes("timeout")) {
+          throw new Error(
+            "پردازش تصویر timeout خورد. لطفاً تصویر ساده‌تری آپلود کنید."
+          );
+        } else if (error.message.includes("language")) {
+          throw new Error("خطا در بارگذاری زبان‌های مورد نیاز برای OCR");
+        }
+      }
+
+      throw new Error(
+        "خطا در پردازش تصویر با Tesseract. لطفاً دوباره تلاش کنید."
+      );
     }
   };
 
-  const handleFileSelect = useCallback(async (file: File) => {
+  const validateFile = (file: File): { isValid: boolean; error?: string } => {
     const validTypes = [
       "image/jpeg",
       "image/png",
@@ -101,86 +203,151 @@ const UploadSection: React.FC = () => {
     ];
 
     if (!validTypes.includes(file.type)) {
-      setUploadState((prev) => ({
-        ...prev,
+      return {
+        isValid: false,
         error: "فقط فایل‌های JPG, PNG, WEBP, BMP, GIF مجاز هستند",
-      }));
-      return;
+      };
     }
 
     if (file.size > 10 * 1024 * 1024) {
-      setUploadState((prev) => ({
-        ...prev,
+      return {
+        isValid: false,
         error: "حجم فایل نباید بیشتر از ۱۰ مگابایت باشد",
-      }));
-      return;
+      };
     }
 
-    setUploadState({
-      file,
-      error: null,
-      isProcessing: true,
-      progress: 0,
-      extractedText: "",
-    });
+    if (file.size === 0) {
+      return {
+        isValid: false,
+        error: "فایل خالی است",
+      };
+    }
 
-    setTranslationState({
-      translatedText: "",
-      sourceLang: "auto",
-      targetLang: "en",
-      isTranslating: false,
-    });
+    return { isValid: true };
+  };
 
-    setShowTranslationPanel(false);
+  const handleFileSelect = useCallback(
+    async (file: File) => {
+      // اعتبارسنجی فایل
+      const validation = validateFile(file);
+      if (!validation.isValid) {
+        setUploadState((prev) => ({
+          ...prev,
+          error: validation.error || "خطای نامشخص در فایل",
+        }));
+        addNotification(
+          "error",
+          "خطای فایل",
+          validation.error || "فایل نامعتبر است"
+        );
+        return;
+      }
 
-    try {
-      const progressInterval = setInterval(() => {
-        setUploadState((prev) => {
-          if (prev.progress >= 50 || !prev.isProcessing) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return { ...prev, progress: prev.progress + 5 };
-        });
-      }, 500);
+      setUploadState({
+        file,
+        error: null,
+        isProcessing: true,
+        progress: 0,
+        extractedText: "",
+      });
 
-      const extractedText = await processImageWithOCR(file);
-      clearInterval(progressInterval);
+      setTranslationState({
+        translatedText: "",
+        sourceLang: "auto",
+        targetLang: "en",
+        isTranslating: false,
+      });
 
-      setUploadState((prev) => ({
-        ...prev,
-        progress: 100,
-      }));
+      setShowTranslationPanel(false);
+      setRetryCount(0);
 
-      setTimeout(() => {
-        setUploadState({
-          file,
-          isProcessing: false,
+      try {
+        // شبیه‌سازی پیشرفت
+        const progressInterval = setInterval(() => {
+          setUploadState((prev) => {
+            if (prev.progress >= 50 || !prev.isProcessing) {
+              clearInterval(progressInterval);
+              return prev;
+            }
+            return { ...prev, progress: prev.progress + 5 };
+          });
+        }, 500);
+
+        const extractedText = await processImageWithOCR(file);
+        clearInterval(progressInterval);
+
+        setUploadState((prev) => ({
+          ...prev,
           progress: 100,
-          extractedText,
-          error: null,
-        });
-      }, 300);
-    } catch (error) {
-      setUploadState((prev) => ({
-        ...prev,
-        isProcessing: false,
-        error:
+        }));
+
+        setTimeout(() => {
+          setUploadState({
+            file,
+            isProcessing: false,
+            progress: 100,
+            extractedText,
+            error: null,
+          });
+
+          if (extractedText.trim().length === 0) {
+            addNotification(
+              "warning",
+              "هشدار",
+              "هیچ متنی در تصویر شناسایی نشد. ممکن است تصویر واضح نباشد یا متن نداشته باشد."
+            );
+          } else {
+            addNotification(
+              "success",
+              "موفق",
+              `متن با موفقیت استخراج شد (${extractedText.length} کاراکتر)`
+            );
+          }
+        }, 300);
+      } catch (error) {
+        const errorMessage =
           error instanceof Error
             ? error.message
-            : "خطای ناشناخته در پردازش تصویر",
-      }));
-    }
-  }, []);
+            : "خطای ناشناخته در پردازش تصویر";
+
+        setUploadState((prev) => ({
+          ...prev,
+          isProcessing: false,
+          error: errorMessage,
+        }));
+
+        addNotification("error", "خطای پردازش", errorMessage);
+
+        // پیشنهاد راه‌حل
+        if (errorMessage.includes("timeout")) {
+          addNotification(
+            "info",
+            "راهنمایی",
+            "سعی کنید تصویر با وضوح پایین‌تر یا متن کمتر آپلود کنید."
+          );
+        }
+      }
+    },
+    [addNotification]
+  );
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault();
       setIsDragActive(false);
+
+      if (e.dataTransfer.files.length > 1) {
+        addNotification(
+          "warning",
+          "توجه",
+          "فقط یک فایل می‌توانید آپلود کنید. اولین فایل انتخاب شد."
+        );
+      }
+
       const file = e.dataTransfer.files[0];
       if (file) handleFileSelect(file);
     },
-    [handleFileSelect]
+    [handleFileSelect, addNotification]
   );
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -196,27 +363,46 @@ const UploadSection: React.FC = () => {
   const handleFileInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
-      if (file) handleFileSelect(file);
+      if (file) {
+        handleFileSelect(file);
+      } else {
+        addNotification("error", "خطا", "فایلی انتخاب نشد");
+      }
       if (e.target) e.target.value = "";
     },
-    [handleFileSelect]
+    [handleFileSelect, addNotification]
   );
 
-  const handleCopyText = useCallback(async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      alert("متن با موفقیت کپی شد");
-    } catch (err) {
-      console.error("Failed to copy text:", err);
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      document.body.appendChild(textArea);
-      textArea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textArea);
-      alert("متن با موفقیت کپی شد");
-    }
-  }, []);
+  const handleCopyText = useCallback(
+    async (text: string, type: string = "متن") => {
+      if (!text.trim()) {
+        addNotification("warning", "هشدار", "متن برای کپی خالی است");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(text);
+        addNotification("success", "موفق", `${type} با موفقیت کپی شد`);
+      } catch (err) {
+        console.error("Failed to copy text:", err);
+        try {
+          // روش fallback برای مرورگرهای قدیمی
+          const textArea = document.createElement("textarea");
+          textArea.value = text;
+          textArea.style.position = "fixed";
+          textArea.style.opacity = "0";
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+          addNotification("success", "موفق", `${type} با موفقیت کپی شد`);
+        } catch (fallbackError) {
+          addNotification("error", "خطا", `خطا در کپی ${type}`);
+        }
+      }
+    },
+    [addNotification]
+  );
 
   const downloadTextFile = useCallback(
     (
@@ -224,20 +410,37 @@ const UploadSection: React.FC = () => {
       format: "txt" | "docx",
       filename: string = "extracted-text"
     ) => {
-      const element = document.createElement("a");
-      const blob = new Blob([text], {
-        type:
-          format === "txt"
-            ? "text/plain;charset=utf-8"
-            : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      });
-      element.href = URL.createObjectURL(blob);
-      element.download = `${filename}.${format}`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
+      if (!text.trim()) {
+        addNotification("warning", "هشدار", "متن برای دانلود خالی است");
+        return;
+      }
+
+      try {
+        const element = document.createElement("a");
+        const blob = new Blob([text], {
+          type:
+            format === "txt"
+              ? "text/plain;charset=utf-8"
+              : "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        });
+        element.href = URL.createObjectURL(blob);
+        element.download = `${filename}.${format}`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        URL.revokeObjectURL(element.href);
+
+        addNotification(
+          "success",
+          "موفق",
+          `فایل ${format} با موفقیت دانلود شد`
+        );
+      } catch (error) {
+        console.error("Download error:", error);
+        addNotification("error", "خطا", "خطا در دانلود فایل");
+      }
     },
-    []
+    [addNotification]
   );
 
   const resetUpload = useCallback(() => {
@@ -255,13 +458,23 @@ const UploadSection: React.FC = () => {
       isTranslating: false,
     });
     setShowTranslationPanel(false);
+    setRetryCount(0);
     if (fileInputRef.current) fileInputRef.current.value = "";
-  }, []);
+
+    addNotification("info", "بازنشانی", "آپلود جدید آماده است");
+  }, [addNotification]);
+
+  const retryLastOperation = useCallback(() => {
+    if (uploadState.file && lastOperation === "ocr_processing") {
+      addNotification("info", "تلاش مجدد", "در حال پردازش مجدد تصویر...");
+      handleFileSelect(uploadState.file);
+    }
+  }, [uploadState.file, lastOperation, handleFileSelect, addNotification]);
 
   const handleTranslate = useCallback(
     async (sourceLang: string = "auto", targetLang: string = "en") => {
       if (!uploadState.extractedText.trim()) {
-        alert("متن برای ترجمه خالی است");
+        addNotification("warning", "هشدار", "متن برای ترجمه خالی است");
         return;
       }
 
@@ -271,6 +484,8 @@ const UploadSection: React.FC = () => {
         sourceLang,
         targetLang,
       }));
+
+      addNotification("info", "شروع ترجمه", "در حال ترجمه متن...");
 
       try {
         const textToTranslate = uploadState.extractedText;
@@ -286,29 +501,45 @@ const UploadSection: React.FC = () => {
         }));
 
         setShowTranslationPanel(true);
+        addNotification("success", "ترجمه کامل", "متن با موفقیت ترجمه شد");
       } catch (error) {
         console.error("Translation error:", error);
+
         try {
+          addNotification(
+            "warning",
+            "سرویس اول",
+            "استفاده از سرویس جایگزین..."
+          );
           const fallbackResponse = await translateWithFallbackAPI(
             uploadState.extractedText,
             targetLang
           );
+
           setTranslationState((prev) => ({
             ...prev,
             translatedText: fallbackResponse,
             isTranslating: false,
           }));
+
           setShowTranslationPanel(true);
+          addNotification(
+            "success",
+            "ترجمه کامل",
+            "متن با سرویس جایگزین ترجمه شد"
+          );
         } catch (fallbackError) {
-          alert("خطا در ترجمه متن. لطفاً دوباره تلاش کنید.");
+          const errorMsg =
+            "خطا در ترجمه متن. لطفاً اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.";
           setTranslationState((prev) => ({
             ...prev,
             isTranslating: false,
           }));
+          addNotification("error", "خطای ترجمه", errorMsg);
         }
       }
     },
-    [uploadState.extractedText]
+    [uploadState.extractedText, addNotification]
   );
 
   const translateWithGoogleAPI = async (
@@ -316,11 +547,17 @@ const UploadSection: React.FC = () => {
     targetLang: string
   ): Promise<string> => {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 ثانیه timeout
+
       const response = await fetch(
         `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(
           text
-        )}`
+        )}`,
+        { signal: controller.signal }
       );
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -333,6 +570,9 @@ const UploadSection: React.FC = () => {
 
       throw new Error("فرمت پاسخ نامعتبر است");
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error("زمان ترجمه به پایان رسید. لطفاً دوباره تلاش کنید.");
+      }
       console.error("Google Translate API error:", error);
       throw error;
     }
@@ -362,7 +602,7 @@ const UploadSection: React.FC = () => {
       return data[0]?.translations[0]?.text || text;
     } catch (error) {
       console.error("Fallback translation error:", error);
-      return `متن ترجمه شده (شبیه‌سازی): ${text.substring(0, 100)}...`;
+      throw new Error("سرویس جایگزین ترجمه نیز با خطا مواجه شد");
     }
   };
 
@@ -370,14 +610,86 @@ const UploadSection: React.FC = () => {
     setShowTranslationPanel((prev) => !prev);
   }, []);
 
-  // شرط برای نمایش آپلود باکس
   const shouldShowUploadBox =
     !uploadState.file && !uploadState.extractedText && !uploadState.error;
 
   return (
-    <section className="py-16 sm:py-24 bg-slate-100 rounded-2xl dark:bg-slate-900/50 transition-colors duration-300">
+    <section className="py-16 sm:py-24 bg-slate-100 rounded-2xl dark:bg-slate-900/50 transition-colors duration-300 relative">
+      {/* سیستم نوتیفیکیشن */}
+      <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+        {notifications.map((notification) => (
+          <div
+            key={notification.id}
+            className={`p-4 rounded-lg shadow-lg border-l-4 ${
+              notification.type === "success"
+                ? "bg-green-50 border-green-500 dark:bg-green-900/20"
+                : notification.type === "error"
+                ? "bg-red-50 border-red-500 dark:bg-red-900/20"
+                : notification.type === "warning"
+                ? "bg-yellow-50 border-yellow-500 dark:bg-yellow-900/20"
+                : "bg-blue-50 border-blue-500 dark:bg-blue-900/20"
+            } transition-all duration-300 transform hover:scale-105`}
+          >
+            <div className="flex items-start gap-3">
+              {notification.type === "success" && (
+                <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5" />
+              )}
+              {notification.type === "error" && (
+                <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+              )}
+              {notification.type === "warning" && (
+                <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+              )}
+              {notification.type === "info" && (
+                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+              )}
+
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <p
+                    className={`font-medium ${
+                      notification.type === "success"
+                        ? "text-green-800"
+                        : notification.type === "error"
+                        ? "text-red-800"
+                        : notification.type === "warning"
+                        ? "text-yellow-800"
+                        : "text-blue-800"
+                    }`}
+                  >
+                    {notification.title}
+                  </p>
+                  <button
+                    onClick={() => removeNotification(notification.id)}
+                    className="text-slate-400 hover:text-slate-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <p
+                  className={`text-sm mt-1 ${
+                    notification.type === "success"
+                      ? "text-green-600"
+                      : notification.type === "error"
+                      ? "text-red-600"
+                      : notification.type === "warning"
+                      ? "text-yellow-600"
+                      : "text-blue-600"
+                  }`}
+                >
+                  {notification.message}
+                </p>
+                <p className="text-xs text-slate-400 mt-2">
+                  {notification.timestamp.toLocaleTimeString("fa-IR")}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       <div className="container mx-auto px-4 max-w-4xl flex flex-col gap-8">
-        {/* Upload Zone - فقط وقتی نمایش داده می‌شود که فایلی آپلود نشده باشد */}
+        {/* Upload Zone */}
         {shouldShowUploadBox && (
           <div
             className={`w-full flex flex-col items-center gap-6 rounded-xl border-2 border-dashed transition-all duration-300 px-6 py-14 cursor-pointer
@@ -451,19 +763,40 @@ const UploadSection: React.FC = () => {
                 style={{ width: `${uploadState.progress}%` }}
               />
             </div>
+            <p className="text-xs text-slate-500 mt-2">
+              این عملیات ممکن است چند لحظه طول بکشد...
+            </p>
           </div>
         )}
 
-        {/* Error Message */}
+        {/* Error Message با قابلیت تلاش مجدد */}
         {uploadState.error && (
-          <div className="w-full p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-center transition-colors duration-300">
-            <p className="text-red-700 dark:text-red-300 font-medium">
-              {uploadState.error}
-            </p>
-            <div className="mt-4 flex justify-center">
-              <Button variant="outline" onClick={resetUpload} size="sm">
-                تلاش مجدد
-              </Button>
+          <div className="w-full p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg transition-colors duration-300">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-red-700 dark:text-red-300 font-medium">
+                  خطا در پردازش
+                </p>
+                <p className="text-red-600 dark:text-red-400 text-sm mt-1">
+                  {uploadState.error}
+                </p>
+                <div className="mt-4 flex gap-2 flex-wrap">
+                  <Button variant="outline" onClick={resetUpload} size="sm">
+                    آپلود جدید
+                  </Button>
+                  {uploadState.file && retryCount < MAX_RETRIES && (
+                    <Button
+                      variant="primary"
+                      onClick={retryLastOperation}
+                      size="sm"
+                      icon={<RefreshCw className="w-4 h-4" />}
+                    >
+                      تلاش مجدد
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -494,7 +827,7 @@ const UploadSection: React.FC = () => {
               </div>
             </div>
 
-            {/* دو بخش کنار هم - شبیه گوگل ترنسلیت */}
+            {/* دو بخش کنار هم */}
             <div
               className={`grid gap-6 ${
                 showTranslationPanel
@@ -506,13 +839,15 @@ const UploadSection: React.FC = () => {
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                   <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                    متن اصلی
+                    متن اصلی ({uploadState.extractedText.length} کاراکتر)
                   </label>
                   <div className="flex gap-1">
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleCopyText(uploadState.extractedText)}
+                      onClick={() =>
+                        handleCopyText(uploadState.extractedText, "متن اصلی")
+                      }
                       icon={<Copy className="w-4 h-4" />}
                     >
                       کپی
@@ -565,6 +900,8 @@ const UploadSection: React.FC = () => {
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                     <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
                       متن ترجمه شده
+                      {translationState.translatedText &&
+                        ` (${translationState.translatedText.length} کاراکتر)`}
                     </label>
                     <div className="flex gap-2">
                       <select
@@ -585,7 +922,10 @@ const UploadSection: React.FC = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() =>
-                          handleCopyText(translationState.translatedText)
+                          handleCopyText(
+                            translationState.translatedText,
+                            "متن ترجمه شده"
+                          )
                         }
                         icon={<Copy className="w-4 h-4" />}
                         disabled={!translationState.translatedText}
