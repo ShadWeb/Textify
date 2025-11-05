@@ -24,7 +24,7 @@ const FeaturesSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 sm:py-24" id="features">
+    <section className="py-16 sm:py-24 dark:bg-gray-700" id="features">
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center gap-4 mb-12">
           <h2 className="text-3xl sm:text-4xl font-black text-center text-slate-900 dark:text-white">

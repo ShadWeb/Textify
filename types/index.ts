@@ -22,3 +22,17 @@ export interface Step {
   title: string;
   description: string;
 }
+export interface TranslationState {
+  isTranslating: boolean;
+  originalText: string;
+  translatedText: string;
+  sourceLanguage: string;
+  targetLanguage: string;
+  error: string | null;
+}
+
+export interface LanguageOption {
+  code: string;
+  name: string;
+  nativeName: string;
+}

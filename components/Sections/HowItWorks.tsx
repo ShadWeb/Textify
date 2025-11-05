@@ -35,7 +35,7 @@ const HowItWorks: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl font-black text-center text-slate-900 dark:text-white">
             چطور کار می‌کند؟
           </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-400 text-center max-w-2xl">
+          <p className="text-lg text-slate-600 dark:text-slate-800 text-center max-w-2xl">
             فرآیند تبدیل در سه مرحله ساده انجام می‌شود.
           </p>
         </div>
@@ -58,7 +58,7 @@ const HowItWorks: React.FC = () => {
               <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                 {step.title}
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-slate-600 dark:text-slate-800">
                 {step.description}
               </p>
             </div>

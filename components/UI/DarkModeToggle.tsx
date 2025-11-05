@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Moon, Sun } from "lucide-react";
 import { toggleDarkMode, initializeTheme } from "../../utils/theme";
 
 const DarkModeToggle: React.FC = () => {
@@ -17,12 +18,10 @@ const DarkModeToggle: React.FC = () => {
   return (
     <button
       onClick={handleToggle}
-      className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-slate-200/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300"
+      className="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-slate-200/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 transition-colors duration-200"
       aria-label="Toggle dark mode"
     >
-      <span className="material-symbols-outlined text-xl">
-        {isDark ? "dark_mode" : "light_mode"}
-      </span>
+      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
     </button>
   );
 };

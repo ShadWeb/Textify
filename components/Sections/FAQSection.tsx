@@ -27,7 +27,7 @@ const FAQSection: React.FC = () => {
   };
 
   return (
-    <section className="py-16 sm:py-24" id="faq">
+    <section className="py-16 sm:py-24 dark:bg-gray-700" id="faq">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="flex flex-col items-center gap-4 mb-12">
           <h2 className="text-3xl sm:text-4xl font-black text-center text-slate-900 dark:text-white">
@@ -51,7 +51,20 @@ const FAQSection: React.FC = () => {
                     openIndex === index ? "rotate-180" : ""
                   }`}
                 >
-                  expand_more
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="size-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
                 </span>
               </button>
 

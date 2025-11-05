@@ -11,10 +11,10 @@ const HeroSection: React.FC = () => {
   };
 
   return (
-    <section className="py-16 sm:py-24">
+    <section className=" py-4 flex items-center justify-center md:min-h-[800px] dark:bg-gray-700">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col gap-6 items-center lg:items-start text-center lg:text-right">
+        <div className="flex flex-col md:flex-row justify-center items-center gap-18 ">
+          <div className="flex flex-col gap-6  lg:justify-center text-center lg:text-right">
             <h1 className="text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl text-slate-900 dark:text-white">
               تبدیل عکس به متن با یک کلیک
             </h1>

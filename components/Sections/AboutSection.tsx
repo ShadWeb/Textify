@@ -12,14 +12,14 @@ const AboutSection: React.FC = () => {
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
               درباره ما
             </h2>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-800 leading-relaxed">
               Textify با هدف ساده‌سازی و در دسترس قرار دادن فناوری تشخیص نوری
               نویسه‌ها (OCR) برای همه ایجاد شده است. ما معتقدیم که دسترسی به
               اطلاعات نباید به فرمت آن محدود باشد. با استفاده از آخرین
               پیشرفت‌های هوش مصنوعی، ابزاری سریع، دقیق و امن را فراهم کرده‌ایم
               تا به شما در تبدیل تصاویر به متن قابل ویرایش کمک کنیم.
             </p>
-            <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-800 leading-relaxed">
               تیم ما متشکل از متخصصان هوش مصنوعی، توسعه‌دهندگان و طراحان تجربه
               کاربری است که با اشتیاق به ایجاد ابزارهای مفید و در دسترس برای
               کاربران فارسی‌زبان می‌پردازند.

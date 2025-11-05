@@ -6,6 +6,7 @@ import FeaturesSection from "@/components/Sections/FeaturesSection";
 import HowItWorks from "@/components/Sections/HowItWorks";
 import FAQSection from "@/components/Sections/FAQSection";
 import AboutSection from "@/components/Sections/AboutSection";
+import BackToTopButton from "@/components/UI/BackToTopButton";
 
 const HomePage: React.FC = () => {
   return (
@@ -19,7 +20,9 @@ const HomePage: React.FC = () => {
         <FAQSection />
         <AboutSection />
       </main>
+
       <Footer />
+      <BackToTopButton />
     </div>
   );
 };
