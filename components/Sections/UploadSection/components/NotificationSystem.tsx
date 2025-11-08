@@ -12,21 +12,21 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
   removeNotification,
 }) => {
   return (
-    <div className="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+    <div className="fixed top-4 right-50%  z-50 space-y-2 max-w-sm">
       {notifications.map((notification) => (
         <div
           key={notification.id}
           className={`p-4 rounded-lg shadow-lg border-l-4 ${
             notification.type === "success"
-              ? "bg-green-50 border-green-500 dark:bg-green-900/20"
+              ? "bg-green-50 border-green-500 dark:bg-green-900/80"
               : notification.type === "error"
-              ? "bg-red-50 border-red-500 dark:bg-red-900/20"
+              ? "bg-red-50 border-red-500 dark:bg-red-900/80"
               : notification.type === "warning"
-              ? "bg-yellow-50 border-yellow-500 dark:bg-yellow-900/20"
-              : "bg-blue-50 border-blue-500 dark:bg-blue-900/20"
+              ? "bg-yellow-50 border-yellow-500 dark:bg-yellow-900/80"
+              : "bg-blue-50 border-blue-500 dark:bg-blue-900/80"
           } transition-all duration-300 transform hover:scale-105`}
         >
-          <div className="flex items-start gap-3">
+          <div className="flex items-start dark:text-white gap-3">
             {notification.type === "success" && (
               <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5" />
             )}

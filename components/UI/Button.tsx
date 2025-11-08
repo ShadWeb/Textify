@@ -56,7 +56,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
     >
-      {icon && <span className="flex-shrink-0">{icon}</span>}
+      {icon && <span className="flex-shrink-0 flex m-auto">{icon}</span>}
       <span className="truncate">{children}</span>
     </button>
   );
