@@ -1019,8 +1019,8 @@
 "use client";
 
 import React, { useState, useRef, useCallback } from "react";
-import { TranslationState, UploadState, Notification } from "../../types";
-import Button from "../UI/Button";
+import { TranslationState, UploadState, Notification } from "../../../types";
+import Button from "../../UI/Button";
 import {
   Upload,
   Copy,

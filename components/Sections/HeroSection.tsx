@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "../UI/Button";
-import UploadSection from "./UploadSection";
+import UploadSection from "./UploadSection/UploadSection";
 
 const HeroSection: React.FC = () => {
   const scrollToUpload = () => {
