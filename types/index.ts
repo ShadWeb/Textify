@@ -22,17 +22,31 @@ export interface Step {
   title: string;
   description: string;
 }
-export interface TranslationState {
-  isTranslating: boolean;
-  originalText: string;
-  translatedText: string;
-  sourceLanguage: string;
-  targetLanguage: string;
-  error: string | null;
-}
+// export interface TranslationState {
+//   isTranslating: boolean;
+//   originalText: string;
+//   translatedText: string;
+//   sourceLanguage: string;
+//   targetLanguage: string;
+//   error: string | null;
+// }
 
 export interface LanguageOption {
   code: string;
   name: string;
   nativeName: string;
+}
+export interface TranslationState {
+  translatedText: string;
+  sourceLang: string;
+  targetLang: string;
+  isTranslating: boolean;
+}
+
+export interface Notification {
+  id: string;
+  type: "success" | "error" | "warning" | "info";
+  title: string;
+  message: string;
+  timestamp: Date;
 }
