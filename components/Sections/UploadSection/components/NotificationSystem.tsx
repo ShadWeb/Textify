@@ -12,7 +12,7 @@ const NotificationSystem: React.FC<NotificationSystemProps> = ({
   removeNotification,
 }) => {
   return (
-    <div className="fixed top-4 right-50%  z-50 space-y-2 max-w-sm">
+    <div className="fixed top-4 right-10 z-50 space-y-2 max-w-sm">
       {notifications.map((notification) => (
         <div
           key={notification.id}

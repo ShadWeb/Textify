@@ -1,6 +1,11 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  HtmlHTMLAttributes,
+} from "react";
 import { useNotification } from "@/hooks/useNotification";
 import { useFileProcessing } from "@/hooks/useFileProcessing";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -13,7 +18,7 @@ import TranslationPanel from "./components/TranslationPanel";
 import Button from "../../UI/Button";
 import { Copy, FileCode, FileText, Languages, X } from "lucide-react";
 
-const UploadSection: React.FC = () => {
+const UploadSection: React.FC<HTMLElement> = () => {
   const { notifications, addNotification, removeNotification } =
     useNotification();
 
@@ -174,7 +179,7 @@ const UploadSection: React.FC = () => {
             setIsDragActive={setIsDragActive}
             handleDrop={handleDrop}
             handleFileSelect={handleFileSelect}
-            fileInputRef={fileInputRef}
+            fileInputRef={fileInputRef || null}
           />
         )}
 

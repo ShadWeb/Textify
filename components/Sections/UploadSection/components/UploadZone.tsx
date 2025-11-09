@@ -7,7 +7,7 @@ interface UploadZoneProps {
   setIsDragActive: (active: boolean) => void;
   handleDrop: (e: React.DragEvent) => void;
   handleFileSelect: (file: File) => void;
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 }
 
 const UploadZone: React.FC<UploadZoneProps> = ({

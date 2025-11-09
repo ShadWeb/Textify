@@ -15,26 +15,36 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="flex-1 max-w-md">
             <div className="flex items-center gap-3 mb-4">
-              <Image
-                alt="PDF to Image Logo"
-                src="/images/piphoto.png"
-                height={100}
-                width={150}
-                className="rounded-lg"
-              />
+              <div className="flex items-center gap-4 text-[#111318] dark:text-white">
+                <div className="size-6 text-primary">
+                  <svg
+                    fill="none"
+                    viewBox="0 0 48 48"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-bold tracking-[-0.015em]">
+                  WordifyImage
+                </h2>
+              </div>
               {/* <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 تبدیل پی دی اف به عکس
               </h2> */}
             </div>
-            <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+            {/* <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
               تبدیل پی دی اف به عکس با کیفیت و آنلاین رایگان بدون نرم افزار در
               ویندوز و یا گوشی اندروید امکان پذیر است. برنامه تبدیل PDF به عکس
               به صورت انلاین و با کیفیت بالا
-            </p>
+            </p> */}
             <div className="space-y-1 text-sm text-gray-500 dark:text-gray-400">
-              <h2>تبدیل پی‌دی‌اف به عکس با کیفیت آنلاین</h2>
-              <h2>تبدیل PDF به عکس رایگان</h2>
-              <h2>برنامه تبدیل پی‌دی‌اف به JPEG, PNG, WEBP</h2>
+              <h2>تبدیل عکس به متن آنلاین</h2>
+              <h2>تبدیل عکس به متن رایگان</h2>
+              <h2>تبدیل عکس به ورد رایگان</h2>
             </div>
           </div>
 
@@ -184,7 +194,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            © {currentYear} PDF به عکس. تمامی حقوق محفوظ است.
+            © {currentYear} تبدیل عکس به متن آنلاین . تمامی حقوق محفوظ است.
           </p>
         </div>
       </div>
