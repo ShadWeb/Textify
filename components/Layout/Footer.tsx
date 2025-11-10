@@ -1,3 +1,4 @@
+import { Send } from "lucide";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -14,26 +15,36 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="flex-1 max-w-md">
             <div className="flex items-center gap-3 mb-4">
-              <Image
-                alt="PDF to Image Logo"
-                src="/images/piphoto.png"
-                height={100}
-                width={150}
-                className="rounded-lg"
-              />
+              <div className="flex items-center gap-4 text-[#111318] dark:text-white">
+                <div className="size-6 text-primary">
+                  <svg
+                    fill="none"
+                    viewBox="0 0 48 48"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-bold tracking-[-0.015em]">
+                  WordifyImage
+                </h2>
+              </div>
               {/* <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 تبدیل پی دی اف به عکس
               </h2> */}
             </div>
-            <p className="text-gray-600 dark:text-gray-800 mb-4 leading-relaxed">
+            {/* <p className="text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
               تبدیل پی دی اف به عکس با کیفیت و آنلاین رایگان بدون نرم افزار در
               ویندوز و یا گوشی اندروید امکان پذیر است. برنامه تبدیل PDF به عکس
               به صورت انلاین و با کیفیت بالا
-            </p>
+            </p> */}
             <div className="space-y-1 text-sm text-gray-500 dark:text-gray-400">
-              <h2>تبدیل پی‌دی‌اف به عکس با کیفیت آنلاین</h2>
-              <h2>تبدیل PDF به عکس رایگان</h2>
-              <h2>برنامه تبدیل پی‌دی‌اف به JPEG, PNG, WEBP</h2>
+              <h2>تبدیل عکس به متن آنلاین</h2>
+              <h2>تبدیل عکس به متن رایگان</h2>
+              <h2>تبدیل عکس به ورد رایگان</h2>
             </div>
           </div>
 
@@ -123,11 +134,14 @@ export default function Footer() {
                 aria-label="تلگرام"
               >
                 <svg
-                  className="h-5 w-5 text-gray-700 dark:text-gray-300"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
                   fill="currentColor"
-                  viewBox="0 0 24 24"
+                  className="h-5 w-5 text-gray-700 dark:text-gray-300"
+                  viewBox="0 0 16 16"
                 >
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 7.935c-.18.02-.435.072-.765.156-1.054.27-3.564 1.146-7.032 2.625-.57.24-.975.438-1.215.594-.42.273-.72.6-.9.984-.18.384-.21.75-.09 1.098.12.348.36.642.72.882.27.18.66.36 1.17.54.51.18 1.008.312 1.494.396.486.084.882.144 1.188.18.684.084 1.434.168 2.25.252.816.084 1.488.18 2.016.288.528.108.972.288 1.332.54.36.252.54.594.54 1.026 0 .36-.12.66-.36.9-.24.24-.558.39-.954.45-.396.06-.834.06-1.314 0-1.2-.24-2.388-.54-3.564-.9-1.176-.36-2.304-.78-3.384-1.26-1.08-.48-2.004-1.05-2.772-1.71-.768-.66-1.38-1.38-1.836-2.16-.456-.78-.624-1.53-.504-2.25.12-.72.48-1.32 1.08-1.8.6-.48 1.38-.78 2.34-.9 1.92-.24 3.84-.18 5.76.18 1.92.36 3.54.96 4.86 1.8.36.24.54.54.54.9 0 .36-.18.66-.54.9-.36.24-.78.36-1.26.36-.48 0-.9-.12-1.26-.36-.84-.6-1.8-1.02-2.88-1.26-1.08-.24-2.16-.3-3.24-.18-.36 0-.66.06-.9.18-.24.12-.42.3-.54.54-.12.24-.18.48-.18.72 0 .24.06.48.18.72.12.24.3.42.54.54.24.12.54.18.9.18.36 0 .72-.06 1.08-.18.36-.12.78-.24 1.26-.36 1.68-.48 3.24-.78 4.68-.9.36 0 .66-.06.9-.18.24-.12.42-.3.54-.54.12-.24.18-.48.18-.72 0-.36-.12-.66-.36-.9-.24-.24-.54-.36-.9-.36z" />
+                  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.287 5.906q-1.168.486-4.666 2.01-.567.225-.595.442c-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294q.39.01.868-.32 3.269-2.206 3.374-2.23c.05-.012.12-.026.166.016s.042.12.037.141c-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8 8 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629q.14.092.27.187c.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.4 1.4 0 0 0-.013-.315.34.34 0 0 0-.114-.217.53.53 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09" />
                 </svg>
               </Link>
 
@@ -163,22 +177,24 @@ export default function Footer() {
             </div>
 
             {/* Vada Logo */}
-            <div className=" w-fit p-3 px-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-              <Image
-                alt="Vada Logo"
-                src="/images/vada_logo.png"
-                height={150}
-                width={150}
-                className="rounded"
-              />
-            </div>
+            <Link href={"https://vada.ir/"}>
+              <div className=" w-fit p-3 px-8 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                <Image
+                  alt="Vada Logo"
+                  src="/images/vada_logo.png"
+                  height={150}
+                  width={150}
+                  className="rounded"
+                />
+              </div>
+            </Link>
           </div>
         </div>
 
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            © {currentYear} PDF به عکس. تمامی حقوق محفوظ است.
+            © {currentYear} تبدیل عکس به متن آنلاین . تمامی حقوق محفوظ است.
           </p>
         </div>
       </div>

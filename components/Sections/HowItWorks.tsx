@@ -10,17 +10,17 @@ const HowItWorks: React.FC = () => {
   const steps: Step[] = [
     {
       number: 1,
-      title: "آپلود تصویر",
+      title: "هوش مصنوعی تبدیل عکس به متن",
       description: "تصویر مورد نظر خود را در ابزار آپلود کنید.",
     },
     {
       number: 2,
-      title: "تحلیل با هوش مصنوعی",
+      title: "نرم افزار تبدیل عکس به متن فارسی",
       description: "سیستم هوشمند ما متن موجود در تصویر را شناسایی می‌کند.",
     },
     {
       number: 3,
-      title: "نمایش و دانلود متن",
+      title: "تبدیل عکس به word بدون بهم ریختگی",
       description: "متن استخراج‌شده را کپی یا به صورت فایل دریافت کنید.",
     },
   ];
@@ -32,12 +32,13 @@ const HowItWorks: React.FC = () => {
     >
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center gap-4 mb-12">
-          <h2 className="text-3xl sm:text-4xl font-black text-center text-slate-900 dark:text-white">
-            چطور کار می‌کند؟
-          </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-800 text-center max-w-2xl">
-            فرآیند تبدیل در سه مرحله ساده انجام می‌شود.
-          </p>
+          <h3 className="text-3xl sm:text-4xl font-black text-center text-slate-900 dark:text-white">
+            تبدیل متن به عکس با هوش مصنوعی
+          </h3>
+          <h3 className="text-lg text-slate-600 dark:text-slate-800 text-center max-w-2xl">
+            بهترین نرم افزار تبدیل عکس به متن تایپ شده فارسی! تبدیل متن به عکس
+            با هوش مصنوعی امکان پذیر شده کاملا رایگان و دقیق!
+          </h3>
         </div>
 
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">

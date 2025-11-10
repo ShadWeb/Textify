@@ -28,7 +28,9 @@ const Header: React.FC = () => {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-bold tracking-[-0.015em]">Textify</h2>
+            <h2 className="text-xl font-bold tracking-[-0.015em]">
+              WordifyImage
+            </h2>
           </div>
 
           <nav className="hidden md:flex items-center gap-8">

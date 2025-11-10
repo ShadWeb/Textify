@@ -15,10 +15,10 @@ const HomePage: React.FC = () => {
       <main className="flex-grow">
         <HeroSection />
 
+        <AboutSection />
         <FeaturesSection />
         <HowItWorks />
         <FAQSection />
-        <AboutSection />
       </main>
 
       <Footer />

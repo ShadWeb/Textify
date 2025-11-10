@@ -6,33 +6,22 @@ export interface UploadState {
   error: string | null;
 }
 
-export interface FAQItem {
-  question: string;
-  answer: string;
-}
-
-export interface Feature {
-  icon: string;
-  title: string;
-  description: string;
-}
-
-export interface Step {
-  number: number;
-  title: string;
-  description: string;
-}
 export interface TranslationState {
-  isTranslating: boolean;
-  originalText: string;
   translatedText: string;
-  sourceLanguage: string;
-  targetLanguage: string;
-  error: string | null;
+  sourceLang: string;
+  targetLang: string;
+  isTranslating: boolean;
 }
 
-export interface LanguageOption {
+export interface Notification {
+  id: string;
+  type: "success" | "error" | "warning" | "info";
+  title: string;
+  message: string;
+  timestamp: Date;
+}
+
+export interface Language {
   code: string;
   name: string;
-  nativeName: string;
 }

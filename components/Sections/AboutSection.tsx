@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const AboutSection: React.FC = () => {
   return (
@@ -10,30 +11,47 @@ const AboutSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="flex flex-col gap-4 text-center lg:text-right">
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white">
-              درباره ما
+              برنامه تبدیل عکس به متن چگونه کار میکند؟
             </h2>
             <p className="text-slate-600 dark:text-slate-800 leading-relaxed">
-              Textify با هدف ساده‌سازی و در دسترس قرار دادن فناوری تشخیص نوری
-              نویسه‌ها (OCR) برای همه ایجاد شده است. ما معتقدیم که دسترسی به
-              اطلاعات نباید به فرمت آن محدود باشد. با استفاده از آخرین
-              پیشرفت‌های هوش مصنوعی، ابزاری سریع، دقیق و امن را فراهم کرده‌ایم
-              تا به شما در تبدیل تصاویر به متن قابل ویرایش کمک کنیم.
-            </p>
-            <p className="text-slate-600 dark:text-slate-800 leading-relaxed">
-              تیم ما متشکل از متخصصان هوش مصنوعی، توسعه‌دهندگان و طراحان تجربه
-              کاربری است که با اشتیاق به ایجاد ابزارهای مفید و در دسترس برای
-              کاربران فارسی‌زبان می‌پردازند.
+              اگر به دنبال تبدیل متن به عکس با هوش مصنوعی یا برعکس، یعنی تبدیل
+              عکس به متن آنلاین هستید، در جای درستی قرار دارید. این ابزار
+              پیشرفته با استفاده از هوش مصنوعی قادر است هر نوع تصویری را که شامل
+              نوشته است، به متن تایپ‌شده فارسی و قابل ویرایش تبدیل کند. شما
+              می‌توانید به‌صورت کاملاً رایگان از سرویس تبدیل عکس به متن رایگان
+              استفاده کنید و در چند ثانیه نتیجه را دریافت نمایید. این سایت به
+              عنوان یک ربات تبدیل عکس به متن طراحی شده که با دقت بالا و پشتیبانی
+              کامل از زبان فارسی، نوشته‌های داخل عکس، اسکن، اسناد و حتی
+              دست‌خط‌ها را شناسایی کرده و آنها را به متن تبدیل می‌کند. اگر قصد
+              دارید فایل ورد داشته باشید، می‌توانید با گزینه تبدیل عکس به ورد
+              رایگان تصویر خود را به فایل Word تبدیل کنید، بدون اینکه بهم‌ریختگی
+              در متن ایجاد شود. بسیاری از کاربران از این ابزار به عنوان بهترین
+              نرم‌افزار تبدیل عکس به متن تایپ شده فارسی یاد می‌کنند، چون برخلاف
+              برنامه‌های دیگر، این سیستم بدون نیاز به نصب هیچ اپلیکیشنی و تنها
+              از طریق مرورگر، کار می‌کند. کافی است عکس خود را آپلود کنید تا هوش
+              مصنوعی تبدیل عکس به متن، آن را به نوشته‌ی دقیق و تمیز تبدیل کند.
+              علاوه بر این، اگر به دنبال نرم‌افزار تبدیل عکس به متن فارسی هستید
+              که روی هر دستگاهی کار کند، یا می‌خواهید یک برنامه تبدیل عکس به متن
+              ساده، سریع و دقیق داشته باشید، این ابزار بهترین گزینه است. با
+              پشتیبانی از تبدیل آنلاین، رایگان و بدون بهم‌ریختگی، می‌توانید هر
+              تصویری را به فایل Word یا متن قابل ویرایش تبدیل کنید. در واقع، این
+              سرویس ترکیبی از چند قابلیت در یک پلتفرم است: تبدیل عکس به Word
+              بدون بهم ریختگی، تبدیل عکس به متن فارسی، و حتی تبدیل متن به عکس با
+              هوش مصنوعی برای ساخت تصاویر زیبا از نوشته‌های شما. همه این امکانات
+              در یک محیط ساده، رایگان و کاملاً هوشمند در دسترس است.
             </p>
           </div>
 
           <div className="flex justify-center items-center">
-            <div
-              className="w-full max-w-sm bg-center bg-no-repeat aspect-square bg-contain"
-              style={{
-                backgroundImage:
-                  'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBPRk6N2U0sywK2y6tD50DoM4Mm-jo-qbkW_V_dr3ixbb_Rw3zLZgtYxrfCBy2hbcUbyKLWr13iEtjXhO0gWe1bUCIfEkPvFYO8GK7BC3ZP-u2uE0L_AWiJTmPbpsvrgASkUMfznTtYg_PVzH-l_lrgm2bYSLvculRLgLOMUhdycjKU6UpexS4rtjDhAc5Zv4t3v5TnVcBoRwPXVyrs04ogicpWrGVrFh5bHvKsvIMt5Mmd8MH3G0p9A3RDNbudwB5a60sPGWa55rPo")',
-              }}
-            />
+            <div className="relative w-full max-w-md aspect-square">
+              <Image
+                src="/images/frame.png"
+                alt="برنامه تبدیل عکس به متن چگونه کار می‌کند"
+                fill
+                className="object-contain rounded-2xl drop-shadow-xl hover:scale-105 transition-transform duration-500"
+                priority
+              />
+            </div>
           </div>
         </div>
       </div>
