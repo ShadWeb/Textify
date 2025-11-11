@@ -29,7 +29,7 @@ export default function Footer() {
                   </svg>
                 </div>
                 <h2 className="text-xl font-bold tracking-[-0.015em]">
-                  WordifyImage
+                  picmatn
                 </h2>
               </div>
               {/* <h2 className="text-xl font-bold text-gray-900 dark:text-white">

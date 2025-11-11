@@ -7,6 +7,7 @@ import HowItWorks from "@/components/Sections/HowItWorks";
 import FAQSection from "@/components/Sections/FAQSection";
 import AboutSection from "@/components/Sections/AboutSection";
 import BackToTopButton from "@/components/UI/BackToTopButton";
+import VideoIntroSection from "@/components/Sections/VideoIntroSection";
 
 const HomePage: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ const HomePage: React.FC = () => {
       <Header />
       <main className="flex-grow">
         <HeroSection />
-
+        <VideoIntroSection />
         <AboutSection />
         <FeaturesSection />
         <HowItWorks />
