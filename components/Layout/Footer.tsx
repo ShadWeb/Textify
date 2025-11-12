@@ -15,22 +15,18 @@ export default function Footer() {
           {/* Brand Section */}
           <div className="flex-1 max-w-md">
             <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center gap-4 text-[#111318] dark:text-white">
-                <div className="size-6 text-primary">
-                  <svg
-                    fill="none"
-                    viewBox="0 0 48 48"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </div>
+              <div className="flex items-center  text-[#111318] dark:text-black">
                 <h2 className="text-xl font-bold tracking-[-0.015em]">
                   picmatn
                 </h2>
+                <div className=" text-primary">
+                  <Image
+                    src={"images/picmatn.png"}
+                    width={60}
+                    height={60}
+                    alt="تبدیل عکس به متن آنلاین"
+                  />
+                </div>
               </div>
               {/* <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 تبدیل پی دی اف به عکس

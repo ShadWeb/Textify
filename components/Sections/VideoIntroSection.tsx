@@ -55,21 +55,19 @@ export default function VideoIntroSection() {
           </div>
 
           {/* ویدیو عمودی iPhone 12 - شبیه دموی اپ */}
-          <div className="order-1 lg:order-2 flex justify-center">
+          <div className="order-1 lg:order-2 flex   justify-center">
             <div className="relative group w-full max-w-sm mx-auto">
               {/* فریم iPhone با notch و گردی واقعی */}
-              <div className="relative bg-black rounded-3xl p-2 shadow-2xl">
+              <div className="relative bg-black  rounded-3xl p-2 shadow-2xl">
                 <div className="relative overflow-hidden rounded-3xl bg-gray-900">
                   {/* نسبت 9:16 (عمودی - iPhone 12) */}
                   <div className="aspect-[9/16] w-full">
-                    <iframe
+                    <video
                       className="w-full h-full object-cover rounded-3xl"
                       src="/video/IMG_9664.MP4"
                       title="برنامه تبدیل عکس به متن با هوش مصنوعی"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    ></iframe>
+                      controls
+                    />
                   </div>
 
                   {/* افکت play در hover */}
@@ -87,7 +85,7 @@ export default function VideoIntroSection() {
                 </div>
 
                 {/* نوچ (Notch) iPhone */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-36 h-7 bg-black rounded-b-2xl"></div>
+                <div className="absolute top-0  left-1/2 transform -translate-x-1/2 w-36 h-7 bg-black rounded-b-2xl"></div>
               </div>
             </div>
 

@@ -165,7 +165,7 @@ const UploadSection: React.FC<HTMLElement> = () => {
     !uploadState.file && !uploadState.extractedText && !uploadState.error;
 
   return (
-    <section className="py-10 bg-slate-100 w-full rounded-2xl dark:bg-slate-900/50 transition-colors duration-300 relative">
+    <section className=" py-5 bg-slate-100  w-full rounded-2xl dark:bg-slate-900/50 transition-colors duration-300 relative">
       <NotificationSystem
         notifications={notifications}
         removeNotification={removeNotification}
